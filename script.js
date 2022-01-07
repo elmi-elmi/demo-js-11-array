@@ -73,14 +73,39 @@ const currencies = new Map([
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
+///////////////////////////////////////////////////
+
+for(const movement of movements){
+  if(movement>0){
+    console.log(`You deposited ${movement}`)
+  }else{
+    console.log(`You withdrew ${Math.abs(movement)}`)
+  }
+}
+console.log('----------------------------')
+movements.forEach(function(movement,indx,arr){
+  console.log(arr)
+  if(movement>0){
+    console.log(`You deposited ${movement}`)
+  }else{
+    console.log(`You withdrew ${Math.abs(movement)}`)
+  }
+})
+
+
+
+
 /////////////////////////////////////////////////
 
-const arr = ['a','b','c','d','e'];
+// const arr = ['a','b','c','d','e'];
 // console.log(arr.slice(2));
 // console.log(arr.slice(2,4));
 // console.log(arr.splice(2))
 // console.log(arr)
 // console.log(arr);
-const arr2 = ['f','g','h','i','j'];
+// const arr2 = ['f','g','h','i','j'];
+// console.log(arr2.at())
+
 // console.log(arr2.reverse())
 // console.log(arr2)
+
