@@ -119,6 +119,7 @@ const createUsername = function (accs) {
   });
 };
 const updateUI = function (acc) {
+  console.log('update ui', acc)
   displayMovement(acc.movements);
 
   calcDisplaySummary(acc);
@@ -166,6 +167,24 @@ btnTransfer.addEventListener("click", function (e) {
     inputTransferTo.value = inputTransferAmount.value = '';
   }
 });
+
+btnClose.addEventListener('click', function(e){
+  e.preventDefault();
+  console.log('close account!')
+
+  console.log(inputClosePin.value===currentAccount.pin, inputCloseUsername.value === currentAccount.username)
+
+  if(+inputClosePin.value===currentAccount.pin && inputCloseUsername.value === currentAccount.username){
+    console.log('valid close')
+    const indx = accounts.findIndex(acc=>acc.username===inputCloseUsername.value)
+    console.log('index:',indx)
+    accounts.splice(indx,1)
+    inputCloseUsername.value = inputClosePin.value = ''
+    containerApp.style.opacity = 0;
+    labelWelcome.textContent = 'Login to get started'
+  }
+
+})
 
 /////////////////////////////
 const currencies = new Map([
