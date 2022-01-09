@@ -90,9 +90,9 @@ const calcDisplaySummary = function (account) {
   labelSumInterest.textContent = `${interest} €`;
 };
 
-const displayMovement = function (movements, sort=false) {
+const displayMovement = function (movements, sort = false) {
   containerMovements.innerHTML = "";
-  const movs = sort?movements.slice().sort((a,b)=>a-b):movements
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
   movs.forEach(function (movement, index) {
     const type = movement > 0 ? "deposit" : "withdrawal";
 
@@ -120,7 +120,7 @@ const createUsername = function (accs) {
   });
 };
 const updateUI = function (acc) {
-  console.log('update ui', acc)
+  console.log("update ui", acc);
   displayMovement(acc.movements);
 
   calcDisplaySummary(acc);
@@ -165,49 +165,68 @@ btnTransfer.addEventListener("click", function (e) {
     currentAccount.movements.push(-amount);
     receiverAcc.movements.push(amount);
     updateUI(currentAccount);
-    inputTransferTo.value = inputTransferAmount.value = '';
+    inputTransferTo.value = inputTransferAmount.value = "";
   }
 });
 
-btnLoan.addEventListener('click',function(e){
+btnLoan.addEventListener("click", function (e) {
   e.preventDefault();
   const amount = Number(inputLoanAmount.value);
-  if(amount > 0&& currentAccount.movements.some(mov=>mov > amount*0.1)){
-    currentAccount.movements.push(amount)
-    updateUI(currentAccount)
-    inputTransferTo.value = inputTransferAmount.value = '';
-
+  if (
+    amount > 0 &&
+    currentAccount.movements.some((mov) => mov > amount * 0.1)
+  ) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+    inputTransferTo.value = inputTransferAmount.value = "";
   }
-})
+});
 
-btnClose.addEventListener('click', function(e){
+btnClose.addEventListener("click", function (e) {
   e.preventDefault();
-  console.log('close account!')
+  console.log("close account!");
 
-  console.log(inputClosePin.value===currentAccount.pin, inputCloseUsername.value === currentAccount.username)
+  console.log(
+    inputClosePin.value === currentAccount.pin,
+    inputCloseUsername.value === currentAccount.username
+  );
 
-  if(+inputClosePin.value===currentAccount.pin && inputCloseUsername.value === currentAccount.username){
-    console.log('valid close')
-    const indx = accounts.findIndex(acc=>acc.username===inputCloseUsername.value)
-    console.log('index:',indx)
-    accounts.splice(indx,1)
-    inputCloseUsername.value = inputClosePin.value = ''
+  if (
+    +inputClosePin.value === currentAccount.pin &&
+    inputCloseUsername.value === currentAccount.username
+  ) {
+    console.log("valid close");
+    const indx = accounts.findIndex(
+      (acc) => acc.username === inputCloseUsername.value
+    );
+    console.log("index:", indx);
+    accounts.splice(indx, 1);
+    inputCloseUsername.value = inputClosePin.value = "";
     containerApp.style.opacity = 0;
-    labelWelcome.textContent = 'Login to get started'
+    labelWelcome.textContent = "Login to get started";
   }
-
-})
+});
 let sorted = false;
-btnSort.addEventListener('click',function(e){
+btnSort.addEventListener("click", function (e) {
   e.preventDefault();
 
-  sorted = !sorted
-  displayMovement(currentAccount.movements,sorted)
+  sorted = !sorted;
+  displayMovement(currentAccount.movements, sorted);
   // sort = sort==='des'?'asc':'des'
   // currentAccount.movements.sort((a,b)=>sort==='des'?a-b:b-a)
   // updateUI(currentAccount)
-})
+});
 
+labelBalance.addEventListener("click", function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll(".movements__value"),
+    (el) => el.textContent.replace("€", "")
+  );
+  // const elements = [...document.querySelectorAll('.movements__value')];
+  // console.log(typeof elements)
+  // console.log(elements.map(el=>el.textContent.replace('€','')))
+  console.log(movementsUI);
+});
 /////////////////////////////
 const currencies = new Map([
   ["USD", "United States dollar"],
@@ -304,3 +323,86 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 // movements.sort((a,b)=>a-b)
 // console.log(movements)
 //
+
+// const randomArray =  Array.from({length:7},()=>Math.random())
+// console.log(randomArray)
+
+const bankDepositSum = accounts
+  .flatMap((account) => account.movements)
+  .filter((mov) => mov > 0)
+  .reduce((acc, mov) => acc + mov, 0);
+
+console.log(bankDepositSum);
+
+// const numDeposit1000 = accounts
+//   .flatMap((mov) => mov.movements)
+//   .filter((mov) => mov > 1000)
+//     .length;
+//
+// console.log(numDeposit1000)
+
+const numDeposit1000 = accounts
+  .flatMap((mov) => mov.movements)
+  .reduce((count, cur) => (cur > 1000 ? ++count : count), 0);
+
+console.log(numDeposit1000);
+
+// 3
+
+const sums = accounts
+  .flatMap((acc) => acc.movements)
+  .reduce(
+    (acc, cur) => {
+      // cur > 0 ? (acc.deposits += cur) : (acc.withdrawals += cur);
+      acc[cur > 0 ? "deposits" : "withdrawals"] += cur;
+      return acc;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+console.log(sums);
+const prepositions = ["a", "an", ];
+const convertTitleCase = function (str) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .reduce(
+      (word, cur) => {
+        const isPrep = prepositions.includes(cur);
+        isPrep ? (word.title += cur+' ') : (word.title += cur.replace(cur[0],cur[0].toUpperCase())+' ');
+        return word;
+      },
+      { title: "" }
+    );
+};
+
+console.log(convertTitleCase("hi there an account is a fuck"));
+
+
+
+/*
+Julia and Kate are still studying dogs, and this time they are studying if dogs are eating too much or too little.
+Eating too much means the dog's current food portion is larger than the recommended portion, and eating too little is the opposite.
+Eating an okay amount means the dog's current food portion is within a range 10% above and 10% below the recommended portion (see hint).
+
+1. Loop over the array containing dog objects, and for each dog, calculate the recommended food portion and add it to the object as a new property. Do NOT create a new array, simply loop over the array. Forumla: recommendedFood = weight ** 0.75 * 28. (The result is in grams of food, and the weight needs to be in kg)
+2. Find Sarah's dog and log to the console whether it's eating too much or too little. HINT: Some dogs have multiple owners, so you first need to find Sarah in the owners array, and so this one is a bit tricky (on purpose) 🤓
+3. Create an array containing all owners of dogs who eat too much ('ownersEatTooMuch') and an array with all owners of dogs who eat too little ('ownersEatTooLittle').
+4. Log a string to the console for each array created in 3., like this: "Matilda and Alice and Bob's dogs eat too much!" and "Sarah and John and Michael's dogs eat too little!"
+5. Log to the console whether there is any dog eating EXACTLY the amount of food that is recommended (just true or false)
+6. Log to the console whether there is any dog eating an OKAY amount of food (just true or false)
+7. Create an array containing the dogs that are eating an OKAY amount of food (try to reuse the condition used in 6.)
+8. Create a shallow copy of the dogs array and sort it by recommended food portion in an ascending order (keep in mind that the portions are inside the array's objects)
+
+HINT 1: Use many different tools to solve these challenges, you can use the summary lecture to choose between them 😉
+HINT 2: Being within a range 10% above and below the recommended portion means: current > (recommended * 0.90) && current < (recommended * 1.10). Basically, the current portion should be between 90% and 110% of the recommended portion.
+
+TEST DATA:
+const dogs = [
+  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+  { weight: 8, curFood: 200, owners: ['Matilda'] },
+  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+  { weight: 32, curFood: 340, owners: ['Michael'] }
+];
+
+GOOD LUCK 😀
+*/
