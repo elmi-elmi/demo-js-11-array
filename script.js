@@ -90,9 +90,10 @@ const calcDisplaySummary = function (account) {
   labelSumInterest.textContent = `${interest} €`;
 };
 
-const displayMovement = function (movements) {
+const displayMovement = function (movements, sort=false) {
   containerMovements.innerHTML = "";
-  movements.forEach(function (movement, index) {
+  const movs = sort?movements.slice().sort((a,b)=>a-b):movements
+  movs.forEach(function (movement, index) {
     const type = movement > 0 ? "deposit" : "withdrawal";
 
     const htmlMov = `
@@ -168,6 +169,17 @@ btnTransfer.addEventListener("click", function (e) {
   }
 });
 
+btnLoan.addEventListener('click',function(e){
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if(amount > 0&& currentAccount.movements.some(mov=>mov > amount*0.1)){
+    currentAccount.movements.push(amount)
+    updateUI(currentAccount)
+    inputTransferTo.value = inputTransferAmount.value = '';
+
+  }
+})
+
 btnClose.addEventListener('click', function(e){
   e.preventDefault();
   console.log('close account!')
@@ -184,6 +196,16 @@ btnClose.addEventListener('click', function(e){
     labelWelcome.textContent = 'Login to get started'
   }
 
+})
+let sorted = false;
+btnSort.addEventListener('click',function(e){
+  e.preventDefault();
+
+  sorted = !sorted
+  displayMovement(currentAccount.movements,sorted)
+  // sort = sort==='des'?'asc':'des'
+  // currentAccount.movements.sort((a,b)=>sort==='des'?a-b:b-a)
+  // updateUI(currentAccount)
 })
 
 /////////////////////////////
@@ -270,3 +292,15 @@ const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 // }
 
 // calcAverageHumanAge(test1)
+
+// const arrr1 = [[1,2,3],[4,6,[11,12,14]],7,8];
+//
+// console.log(arrr1.flat(2))
+//
+// const owners = ['jonas', 'zack', 'adam']
+// console.log(owners.sort())
+//
+// console.log(movements)
+// movements.sort((a,b)=>a-b)
+// console.log(movements)
+//
